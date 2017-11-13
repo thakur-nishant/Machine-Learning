@@ -2,6 +2,7 @@ import random
 from math import floor
 import collections
 
+
 def kmeans_clustering():
     iris = []
     with open('iris.data') as f:
@@ -17,10 +18,10 @@ def kmeans_clustering():
     kmean = [iris[rand_mean[0]], iris[rand_mean[1]], iris[rand_mean[2]]]
     flag = True
     while flag:
-        kcluster = [[],[],[]]
-        next_centroid = [[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+        kcluster = [[], [], []]
+        next_centroid = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
         for data in range(train):
-            dist = [0,0,0]
+            dist = [0, 0, 0]
             for k in range(3):
                 for i in range(4):
                     try:
@@ -37,7 +38,7 @@ def kmeans_clustering():
             # print(kcluster[i])
             for j in range(4):
                 if len(kcluster[i]):
-                    next_centroid[i][j] = next_centroid[i][j]/len(kcluster[i])
+                    next_centroid[i][j] = next_centroid[i][j] / len(kcluster[i])
                 else:
                     next_centroid[i][j] = 0.0
         # print(next_centroid)
@@ -49,7 +50,7 @@ def kmeans_clustering():
 
     # print(kmean)
 
-    cluster_name = ['','','']
+    cluster_name = ['', '', '']
     for i in range(3):
         print(kcluster[i])
         name = []
@@ -78,19 +79,18 @@ def kmeans_clustering():
         if iris[data][4] == cluster_name[min_index]:
             correct += 1
 
-    accuracy = correct/test*100
+    accuracy = correct / test * 100
     print("accuracy =", accuracy)
     return accuracy
 
 
-
-#running kmeans clustering over 1000 times on iris dataset to get avgerage accuracy
+# running kmeans clustering over 1000 times on iris dataset to get avgerage accuracy
 avg_accuracy = 0
 for x in range(1000):
-    print("Iteration #",x+1)
+    print("Iteration #", x + 1)
     current_accuracy = kmeans_clustering()
     avg_accuracy += current_accuracy
 
-avg_accuracy = avg_accuracy/1000
+avg_accuracy = avg_accuracy / 1000
 
-print("average accuracy =",avg_accuracy)
+print("average accuracy =", avg_accuracy)
