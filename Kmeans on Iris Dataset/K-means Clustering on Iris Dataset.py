@@ -75,7 +75,7 @@ def kmeans_clustering():
                     pass
         min_val = min(dist)
         min_index = dist.index(min_val)
-        # print(iris[data],"=",cluster_name[min_index])
+        print(iris[data],"=",cluster_name[min_index])
         if iris[data][4] == cluster_name[min_index]:
             correct += 1
 
@@ -86,7 +86,7 @@ def kmeans_clustering():
 
 # running kmeans clustering over 1000 times on iris dataset to get avgerage accuracy
 avg_accuracy = 0
-for x in range(1000):
+for x in range(5):
     print("Iteration #", x + 1)
     current_accuracy = kmeans_clustering()
     avg_accuracy += current_accuracy
