@@ -86,11 +86,11 @@ def kmeans_clustering():
 
 # running kmeans clustering over 1000 times on iris dataset to get avgerage accuracy
 avg_accuracy = 0
-for x in range(5):
+for x in range(2):
     print("Iteration #", x + 1)
     current_accuracy = kmeans_clustering()
     avg_accuracy += current_accuracy
 
-avg_accuracy = avg_accuracy / 1000
+avg_accuracy = avg_accuracy / 2
 
 print("average accuracy =", avg_accuracy)
