@@ -16,7 +16,7 @@ class ID3:
         self.stat = self.statistics(self.votes, self.attributes)
 
         self.eS = self.entropy(self.stat, attr = self.attributes[-1])
-        print("Entropy(S) =", self.eS)
+        print("\nEntropy(S) =", self.eS)
         # for i in self.votes:
         #     print(i)
         self.stat = self.statistics(self.votes, self.attributes)
@@ -24,7 +24,7 @@ class ID3:
         print("Gain:", gain)
 
         select = (max(gain, key=gain.get))
-        print("selected1:",select)
+        print("Selected:",select)
         # self.draw[select] = {}
         g = self.recursive_select(self.stat[select], select)
         self.draw[select] = g
@@ -42,7 +42,7 @@ class ID3:
             if key != 'total':
 
                 eS = self.entropy(stat[key], None)
-                print("Entropy(S-"+select, key+") =", self.eS)
+                print("\nEntropy(S-"+select, key+") =", self.eS)
 
                 if abs(eS) != 0:
                     newV = []
@@ -52,7 +52,7 @@ class ID3:
 
                     stat1 = self.statistics(newV, self.attributes)
                     gain1 = self.gain(eS, stat1)
-                    print(gain1)
+                    print("Gain:", gain1)
                     if gain1:
                         graph[key] = {}
                         select1 = (max(gain1, key = gain1.get))
@@ -75,8 +75,9 @@ class ID3:
         data = {}
 
         for attr in attributes:
-            data[attr] = {}
-            data[attr]['total'] = 0
+            if attr not in self.visted:
+                data[attr] = {}
+                data[attr]['total'] = 0
 
         for vote in votes:
             for j in attributes:
@@ -93,7 +94,7 @@ class ID3:
                         data[attributes[key]][vote[key]]['total'] = 1
                         data[attributes[key]][vote[key]][vote[-1]] = 1
                     data[attributes[key]]['total'] += 1
-        print(len(data.keys()),data)
+        print("Stats:", len(data.keys()),data)
         return  data
 
 
