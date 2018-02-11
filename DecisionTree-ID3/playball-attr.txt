@@ -1,1 +1,1 @@
-Outlook,Temperature,Humidity,Wind,Play
+Outlook,Temperature,Humidity,Wind,Class

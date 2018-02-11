@@ -25,20 +25,69 @@ class ID3:
 
         select = (max(gain, key=gain.get))
         print("selected1:",select)
-        # self.draw[select] = {}
-        g = self.recursive_select(self.stat[select], select)
-        self.draw[select] = g
-        print(self.draw)
+        self.recursive_select(self.stat[select], select)
+        # for key in self.stat[select].keys():
+        #     # print(self.stat)
+        #     if key != 'total':
+        #
+        #         self.eS = self.entropy(self.stat[select][key], None)
+        #         print("Entropy(S-"+select, key+") =", self.eS)
+        #
+        #         if abs(self.eS) != 0:
+        #             newV = []
+        #             for i in self.votes:
+        #                 if i[ind] == key:
+        #                     newV.append(i)
+        #
+        #             stat1 = self.statistics(newV, self.attributes)
+        #             gain1 = self.gain(self.eS, stat1)
+        #             print(gain1)
+        #             if gain1:
+        #                 select1 = (max(gain1, key = gain1.get))
+        #                 print("selected:", select1)
+        #                 self.visted.append(select1)
+        #                 ind1 = self.attributes.index(select1)
+        #
+        #                 for key1 in stat1[select1]:
+        #                     # print(self.stat)
+        #                     if key1 != 'total':
+        #                         print(key1, stat1[select1][key1])
+        #                         self.eS1 = self.entropy(stat1[select1][key1], None)
+        #                         print("Entropy(S-" + select1, key1 + ") =", self.eS1)
+        #
+        #                         if abs(self.eS1) != 0:
+        #                             newV1 = []
+        #                             for i in newV:
+        #                                 if i[ind1] == key1:
+        #                                     newV1.append(i)
+        #
+        #                             stat11 = self.statistics(newV1, self.attributes)
+        #                             gain11 = self.gain(self.eS1, stat11)
+        #                             print(gain11)
+        #                             if gain11:
+        #                                 select11 = (max(gain11, key=gain11.get))
+        #                                 self.visted.append(select11)
+        #                                 print("selected:", select11)
+        #                             else:
+        #                                 break
+        #
+        #                         else:
+        #                             for d in stat1[select1][key1]:
+        #                                 if d != 'total':
+        #                                     print("Play: ", d)
+        #
+        #         else:
+        #             for d in self.stat[select][key].keys():
+        #                 if d != 'total':
+        #                     print("Play: ", d)
 
 
     def recursive_select(self,stat, select):
 
         ind = self.attributes.index(select)
         self.visted.append(select)
-        graph = {}
         for key in stat:
             # print(self.stat)
-
             if key != 'total':
 
                 eS = self.entropy(stat[key], None)
@@ -54,12 +103,11 @@ class ID3:
                     gain1 = self.gain(eS, stat1)
                     print(gain1)
                     if gain1:
-                        graph[key] = {}
                         select1 = (max(gain1, key = gain1.get))
                         print("selected:", select1)
                         self.visted.append(select1)
 
-                        graph[key][select1] = self.recursive_select(stat1[select1], select1)
+                        self.recursive_select(stat1[select1], select1)
                     else:
                         break
                 else:
@@ -67,8 +115,7 @@ class ID3:
                         if d != 'total':
                             print("Play: ",key, d)
                             print()
-                            graph.update({key : d})
-        return graph
+
 
 
     def statistics(self, votes, attributes):
