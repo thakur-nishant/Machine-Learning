@@ -12,32 +12,30 @@ class ID3:
                 data = line[:-1].split(',')
                 self.votes.append(data)
         self.draw = {}
-        self.visited = []
         self.stat = {}
         self.queue = []
-
         self.start()
 
 
     def start(self):
-        self.stat = self.statistics(self.votes, self.attributes)
+        self.stat = self.statistics(self.votes, self.attributes, [])
 
         self.eS = self.entropy(self.stat, attr = "Class")
         print("\nEntropy(S) =", self.eS)
 
-        gain = self.gain(self.eS, self.stat)
+        gain = self.gain(self.eS, self.stat, [])
         print("Gain:", gain)
 
         select = (max(gain, key=gain.get))
         print("Selected:",select)
         self.draw[select] = {}
 
-        g = self.recursive_select(self.stat[select], select)
+        g = self.recursive_select(self.stat[select], select, [])
         self.draw[select] = g
 
         while self.queue:
             current = self.queue.pop(0)
-            g = self.recursive_select(current[0], current[1])
+            g = self.recursive_select(current[0], current[1], current[2])
             self.make_graph(current[1], g, self.draw)
 
         print(self.draw)
@@ -53,13 +51,13 @@ class ID3:
                     self.make_graph(current, g, draw[key])
 
 
-    def recursive_select(self,stat, select):
-
+    def recursive_select(self,stat, select, visited):
         ind = self.attributes.index(select)
-        self.visited.append(select)
+        visited += [select]
         graph = {}
         for key in stat:
             if key != 'total':
+
                 eS = self.entropy(stat[key], None)
                 print("\nEntropy(S-"+select, key+") =", eS)
 
@@ -69,24 +67,20 @@ class ID3:
                         if i[ind] == key:
                             newV.append(i)
 
-                    stat1 = self.statistics(newV, self.attributes)
-                    gain1 = self.gain(eS, stat1)
+                    stat1 = self.statistics(newV, self.attributes, visited)
+                    gain1 = self.gain(eS, stat1, visited)
                     print("Gain:", gain1)
                     if gain1:
                         graph[key] = {}
                         selected_attr = (max(gain1, key = gain1.get))
                         print("selected:", selected_attr)
-                        self.visited.append(selected_attr)
-                        self.queue.append([stat1[selected_attr], selected_attr])
-                        graph[key][selected_attr] = {}
+                        # visited += [selected_attr]
+                        print(visited, visited + [selected_attr])
+                        if gain1[selected_attr] >= 0:
+                            self.queue.append([stat1[selected_attr], selected_attr, visited + [selected_attr]])
+                            graph[key][selected_attr] = {}
                     else:
-                        major = -1
-                        for k in stat1['Class']:
-                            print(k)
-                            if k != 'total':
-                                if stat1['Class'][k]['total'] > major:
-                                    graph[key] = k
-                                    major = stat1['Class'][k]['total']
+                        break
                 else:
                     for d in stat[key]:
                         if d != 'total':
@@ -96,17 +90,17 @@ class ID3:
         return graph
 
 
-    def statistics(self, votes, attributes):
+    def statistics(self, votes, attributes, visited):
         data = {}
         i = attributes.index("Class")
         for attr in attributes:
-            if attr not in self.visited:
+            if attr not in visited:
                 data[attr] = {}
                 data[attr]['total'] = 0
 
         for vote in votes:
             for j in attributes:
-                if j not in self.visited:
+                if j not in visited:
                     key = attributes.index(j)
                     if vote[key] in data[attributes[key]]:
                         if vote[i] in data[attributes[key]][vote[key]]:
@@ -138,10 +132,10 @@ class ID3:
         return -entropy
 
 
-    def gain(self, S, data):
+    def gain(self, S, data, visited):
         gain = {}
         for col in data:
-            if col != 'Class' and col not in self.visited:
+            if col != 'Class' and col not in visited:
                 gain[col] = S
                 for key in data[col]:
                     if key != 'total':
