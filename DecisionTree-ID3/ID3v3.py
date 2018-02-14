@@ -22,8 +22,12 @@ class ID3:
         if vals.count(vals[0]) == len(data):
             return vals[0]
 
-        if len(attributes) <= 0:
+        if len(attributes) - 1 <= 0:
             return tree
+
+        
+
+
 
 
 

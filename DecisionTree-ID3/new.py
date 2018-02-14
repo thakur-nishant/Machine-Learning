@@ -88,7 +88,7 @@ def gain(data, attr, target_attr):
     # by their probability of occuring in the training set.
     for val in val_freq.keys():
         val_prob        = val_freq[val] / sum(val_freq.values())
-            data_subset     = [record for record in data if record[attr] == val]
+        data_subset     = [record for record in data if record[attr] == val]
         subset_entropy += val_prob * entropy(data_subset, target_attr)
 
     # Subtract the entropy of the chosen attribute from the entropy of the
