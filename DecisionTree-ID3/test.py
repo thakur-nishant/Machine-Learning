@@ -2,7 +2,7 @@ import math, random
 
 def train_test():
     votes = []
-    with open('tic-tac-toe.data') as f:
+    with open('iris.data') as f:
         for line in f:
             data = line[:-1].split(',')
             votes.append(data)

@@ -41,7 +41,7 @@ class ID3:
 
             if key != 'total':
 
-                eS = self.entropy(stat[key], None)
+                eS = self.entropy(stat, self.attributes[-1])
                 print("\nEntropy(S-"+select, key+") =", eS)
 
                 if abs(eS) != 0:
