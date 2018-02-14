@@ -1,6 +1,5 @@
 import math, json
 import random
-from collections import defaultdict
 
 class ID3:
     def __init__(self):
@@ -21,14 +20,43 @@ class ID3:
         train = self.data[:len_train]
         test = self.data[len_train:]
 
-        self.stats = self.statistics(train, self.attributes)
-
-        tree = self.create_decision_tree(train, "Class", self.attributes)
-        # print(z)
-        print(json.dumps(tree))
-
+        tree = self.cross_validation(20, train)
+        # self.stats = self.statistics(train, self.attributes)
+        #
+        # tree = self.create_decision_tree(train, "Class", self.attributes)
+        # # print(z)
+        # print(json.dumps(tree))
+        #
         accuracy = self.test_decision_tree(test, tree)
         print("Accuracy:", accuracy)
+
+
+    def cross_validation(self, k, data):
+        n = len(data)
+        len_k = n//k
+        accuracy_list = []
+        tree_list = []
+        for i in range(k):
+            start = i*len_k
+            end = (i+1) * len_k
+            test = data[start:end]
+            train = [x for x in data if x not in test]
+
+            self.stats = self.statistics(train, self.attributes)
+
+            tree = self.create_decision_tree(train, "Class", self.attributes)
+            # print(z)
+            print(json.dumps(tree))
+
+            accuracy = self.test_decision_tree(test, tree)
+            print("Accuracy:", accuracy)
+            tree_list.append(tree)
+            accuracy_list.append(accuracy)
+
+        print("Cross-validation Average Accuracy:", sum(accuracy_list)/k)
+        best_tree = accuracy_list.index(max(accuracy_list))
+
+        return tree_list[best_tree]
 
 
 
@@ -66,50 +94,41 @@ class ID3:
 
 
     def entropy(self, data, target_attr):
-        """
-        Calculates the entropy of the given data set for the target attribute.
-        """
-        val_freq = {}
-        data_entropy = 0.0
+
+        stat = {}
+        entropy = 0.0
         i = self.attributes.index(target_attr)
-        # Calculate the frequency of each of the values in the target attr
-        for record in data:
-            if record[i] in val_freq:
-                val_freq[record[i]] += 1.0
+
+        for row in data:
+            if row[i] in stat:
+                stat[row[i]] += 1.0
             else:
-                val_freq[record[i]] = 1.0
+                stat[row[i]] = 1.0
 
-        # Calculate the entropy of the data for the target attribute
-        for freq in val_freq.values():
-            data_entropy += (-freq / len(data)) * math.log(freq / len(data), 2)
+        for key in stat.values():
+            entropy += (-key / len(data)) * math.log2(key / len(data))
 
-        return data_entropy
+        return entropy
 
 
     def gain(self, data, attr, target_attr):
-        """
-        Calculates the information gain (reduction in entropy) that would
-        result by splitting the data on the chosen attribute (attr).
-        """
-        val_freq = {}
+
+        stats = {}
         subset_entropy = 0.0
         i = self.attributes.index(attr)
-        # Calculate the frequency of each of the values in the target attribute
-        for record in data:
-            if record[i] in val_freq:
-                val_freq[record[i]] += 1.0
+
+        for row in data:
+            if row[i] in stats:
+                stats[row[i]] += 1.0
             else:
-                val_freq[record[i]] = 1.0
+                stats[row[i]] = 1.0
 
-        # Calculate the sum of the entropy for each subset of records weighted
-        # by their probability of occuring in the training set.
-        for val in val_freq.keys():
-            val_prob = val_freq[val] / sum(val_freq.values())
-            data_subset = [record for record in data if record[i] == val]
-            subset_entropy += val_prob * self.entropy(data_subset, target_attr)
 
-        # Subtract the entropy of the chosen attribute from the entropy of the
-        # whole data set with respect to the target attribute (and return it)
+        for key in stats.keys():
+            key_stat = stats[key] / sum(stats.values())
+            new_data = [record for record in data if record[i] == key]
+            subset_entropy += key_stat * self.entropy(new_data, target_attr)
+
         return (self.entropy(data, target_attr) - subset_entropy)
 
 
