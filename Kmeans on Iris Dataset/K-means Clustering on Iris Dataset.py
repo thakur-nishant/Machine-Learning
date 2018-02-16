@@ -7,7 +7,7 @@ def kmeans_clustering():
     iris = []
     with open('iris.data') as f:
         for line in f:
-            data = line.split(',')
+            data = line[:-1].split(',')
             iris.append(data)
 
     random.shuffle(iris)
