@@ -104,9 +104,9 @@ class ID3:
                     if row[i] == key:
                         new_data.append(row)
 
-                new_attrinures = [attr for attr in attributes if attr != best_gain]
+                next_attrinures = [attr for attr in attributes if attr != best_gain]
 
-                subtree = self.create_decision_tree(new_data, target_attribute, new_attrinures)
+                subtree = self.create_decision_tree(new_data, target_attribute, next_attrinures)
                 tree[best_gain][key] = subtree
 
         return tree
@@ -114,11 +114,11 @@ class ID3:
 
     #this function is used to caluculate the entropy
     # returns entropy
-    def entropy(self, data, target_attr):
+    def entropy(self, data, target_attribute):
 
         stat = {}
         entropy = 0.0
-        i = self.attributes.index(target_attr)
+        i = self.attributes.index(target_attribute) 
 
         for row in data:
             if row[i] in stat:
