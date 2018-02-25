@@ -118,7 +118,7 @@ class ID3:
 
         stat = {}
         entropy = 0.0
-        i = self.attributes.index(target_attribute) 
+        i = self.attributes.index(target_attribute)
 
         for row in data:
             if row[i] in stat:
