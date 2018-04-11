@@ -14,8 +14,9 @@ def kmeans_clustering():
     n = len(iris)
     train = floor(n * 0.8)
     test = n - train
-    rand_mean = random.sample(range(0, train), 3)
-    kmean = [iris[rand_mean[0]], iris[rand_mean[1]], iris[rand_mean[2]]]
+    # rand_mean = random.sample(range(0, train), 3)
+    # kmean = [iris[rand_mean[0]], iris[rand_mean[1]], iris[rand_mean[2]]]
+    kmean = random.sample(iris[:train], 3)
     flag = True
     while flag:
         kcluster = [[], [], []]
@@ -52,7 +53,6 @@ def kmeans_clustering():
 
     cluster_name = ['', '', '']
     for i in range(3):
-        print(kcluster[i])
         name = []
         for j in range(len(kcluster[i])):
             name.append(kcluster[i][j][4])
